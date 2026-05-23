@@ -1,0 +1,6 @@
+$ docker compose ps
+NAME                IMAGE                                             SERVICE         STATUS                 PORTS
+lab-postgres        postgres:16                                       postgres        Up (healthy)           5432/tcp
+lab-zabbix-server   zabbix/zabbix-server-pgsql:alpine-7.0-latest      zabbix-server   Up                     0.0.0.0:10051->10051/tcp
+lab-zabbix-web      zabbix/zabbix-web-nginx-pgsql:alpine-7.0-latest   zabbix-web      Up                     0.0.0.0:8080->8080/tcp
+lab-grafana         grafana/grafana-oss:11.0.0                        grafana         Up                     0.0.0.0:3000->3000/tcp

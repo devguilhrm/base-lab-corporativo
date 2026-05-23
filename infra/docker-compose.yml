@@ -1,0 +1,91 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: lab-postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - monitoring_net
+
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:alpine-7.0-latest
+    container_name: lab-zabbix-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_SERVER_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      ZBX_SERVER_NAME: ${ZBX_SERVER_NAME}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "10051:10051"
+    networks:
+      - monitoring_net
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:alpine-7.0-latest
+    container_name: lab-zabbix-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+      DB_SERVER_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PHP_TZ: ${ZBX_TIMEZONE}
+    depends_on:
+      - zabbix-server
+    ports:
+      - "8080:8080"
+    networks:
+      - monitoring_net
+
+  grafana:
+    image: grafana/grafana-oss:11.0.0
+    container_name: lab-grafana
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
+      GF_INSTALL_PLUGINS: alexanderzobnin-zabbix-app
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - zabbix-server
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring_net
+
+networks:
+  monitoring_net:
+    driver: bridge
+
+volumes:
+  pg_data:
+  grafana_data:
+

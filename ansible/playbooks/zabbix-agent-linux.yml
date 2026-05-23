@@ -1,0 +1,66 @@
+---
+- name: Install and configure Zabbix Agent 2 on Linux hosts
+  hosts: linux
+  gather_facts: true
+
+  tasks:
+    - name: Download Zabbix release package for Ubuntu 22.04
+      ansible.builtin.get_url:
+        url: "{{ zabbix_repo_deb }}"
+        dest: /tmp/zabbix-release.deb
+        mode: "0644"
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Register Zabbix repository package on Ubuntu
+      ansible.builtin.apt:
+        deb: /tmp/zabbix-release.deb
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install Zabbix Agent 2 on Ubuntu
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - zabbix-agent2
+          - zabbix-agent2-plugin-mongodb
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install Zabbix Agent 2 on RedHat family
+      ansible.builtin.dnf:
+        name: zabbix-agent2
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Configure Server for passive checks
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: "^Server="
+        line: "Server={{ zabbix_server_host }}"
+      notify: Restart zabbix agent
+
+    - name: Configure ServerActive for active checks
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: "^ServerActive="
+        line: "ServerActive={{ zabbix_server_host }}"
+      notify: Restart zabbix agent
+
+    - name: Configure HostnameItem for auto hostname
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: "^HostnameItem="
+        line: "HostnameItem=system.hostname"
+      notify: Restart zabbix agent
+
+    - name: Ensure zabbix agent service is enabled
+      ansible.builtin.service:
+        name: zabbix-agent2
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Restart zabbix agent
+      ansible.builtin.service:
+        name: zabbix-agent2
+        state: restarted
+

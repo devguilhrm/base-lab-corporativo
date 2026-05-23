@@ -1,0 +1,95 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 6f1f98636a0b4b2f9a6ad001f8f00001
+      name: Templates/Homelab
+  templates:
+    - uuid: 6f1f98636a0b4b2f9a6ad001f8fad001
+      template: Template Homelab Active Directory
+      name: Template Homelab Active Directory
+      groups:
+        - name: Templates/Homelab
+      description: Custom AD DS monitoring for vm-dc01 using Zabbix Agent 2 and PowerShell UserParameters.
+      items:
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8fad101
+          name: AD replication errors
+          type: ZABBIX_ACTIVE
+          key: ad.replication.errors
+          delay: 1m
+          value_type: UNSIGNED
+          tags:
+            - tag: component
+              value: active-directory
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8fad201
+              expression: last(/Template Homelab Active Directory/ad.replication.errors)>0
+              name: Replicacao AD com erros
+              priority: HIGH
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8fad102
+          name: NTDS service state
+          type: ZABBIX
+          key: ad.service.ntds
+          delay: 30s
+          value_type: TEXT
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8fad202
+              expression: find(/Template Homelab Active Directory/ad.service.ntds,,"like","Running")=0
+              name: Servico NTDS parado
+              priority: DISASTER
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8fad103
+          name: DNS Server service state
+          type: ZABBIX
+          key: service.info[DNS,state]
+          delay: 30s
+          value_type: UNSIGNED
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8fad203
+              expression: last(/Template Homelab Active Directory/service.info[DNS,state])<>0
+              name: Servico DNS parado
+              priority: DISASTER
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8fad104
+          name: Netlogon service state
+          type: ZABBIX
+          key: service.info[Netlogon,state]
+          delay: 30s
+          value_type: UNSIGNED
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8fad204
+              expression: last(/Template Homelab Active Directory/service.info[Netlogon,state])<>0
+              name: Servico Netlogon parado
+              priority: HIGH
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8fad105
+          name: DFSR service state
+          type: ZABBIX
+          key: service.info[DFSR,state]
+          delay: 1m
+          value_type: UNSIGNED
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8fad205
+              expression: last(/Template Homelab Active Directory/service.info[DFSR,state])<>0
+              name: Servico DFSR parado
+              priority: HIGH
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8fad106
+          name: Locked users
+          type: ZABBIX_ACTIVE
+          key: ad.users.locked
+          delay: 5m
+          value_type: UNSIGNED
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8fad206
+              expression: last(/Template Homelab Active Directory/ad.users.locked)>0
+              name: Contas bloqueadas detectadas
+              priority: HIGH
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8fad107
+          name: Domain functional level
+          type: ZABBIX_ACTIVE
+          key: ad.domain.level
+          delay: 1d
+          value_type: TEXT
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8fad108
+          name: Domain controller count
+          type: ZABBIX_ACTIVE
+          key: ad.dc.count
+          delay: 1h
+          value_type: UNSIGNED
+

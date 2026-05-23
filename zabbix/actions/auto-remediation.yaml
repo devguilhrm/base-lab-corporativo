@@ -1,0 +1,37 @@
+actions:
+  - name: Servico Linux parado
+    event_source: triggers
+    condition: "Trigger name contains 'servico' and host group equals Linux Servers"
+    operation: "/usr/local/bin/restart_service.sh {EVENT.TAGS.service}"
+    recovery_operation: "Notify Admin: service recovered"
+
+  - name: Disco cheio > 90% Linux
+    event_source: triggers
+    condition: "Trigger name contains 'Disco' and severity >= High"
+    operation: "/usr/local/bin/clean_logs.sh"
+    recovery_operation: "Notify Admin: disk cleanup completed"
+
+  - name: CPU alta Linux > 85%
+    event_source: triggers
+    condition: "Trigger name contains 'CPU' and severity >= High"
+    operation: "top -b -n1 | head -40"
+    recovery_operation: "Notify Admin: CPU normalized"
+
+  - name: Host inacessivel
+    event_source: triggers
+    condition: "Trigger name contains 'Host inacessivel'"
+    operation: "ping -c 5 {HOST.IP}"
+    recovery_operation: "Notify Admin: host reachable"
+
+  - name: Servico Windows parado
+    event_source: triggers
+    condition: "Trigger name contains 'Servico' and host group equals Windows Servers"
+    operation: "powershell -NoProfile -ExecutionPolicy Bypass -Command Restart-Service -Name '{EVENT.TAGS.service}'"
+    recovery_operation: "Notify Admin: Windows service recovered"
+
+  - name: Falhas SSH excessivas
+    event_source: triggers
+    condition: "Trigger name equals 'Falhas SSH > 50/hora'"
+    operation: "fail2ban-client reload sshd"
+    recovery_operation: "Notify Admin: SSH failure rate normalized"
+

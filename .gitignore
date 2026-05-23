@@ -1,0 +1,17 @@
+.env
+*.log
+*.tmp
+*.bak
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+venv/
+.venv/
+*.pyc
+*.pyo
+*.swp
+.DS_Store
+Thumbs.db
+reports/output/
+backups/
+

@@ -1,0 +1,83 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 6f1f98636a0b4b2f9a6ad001f8f00003
+      name: Templates/Homelab
+  templates:
+    - uuid: 6f1f98636a0b4b2f9a6ad001f85ec001
+      template: Template Homelab Linux Security
+      name: Template Homelab Linux Security
+      groups:
+        - name: Templates/Homelab
+      description: Linux Security monitoring from the Zabbix implementation guide.
+      items:
+        - uuid: 6f1f98636a0b4b2f9a6ad001f85ec101
+          name: Failed SSH attempts last hour
+          type: ZABBIX_ACTIVE
+          key: security.ssh.failures
+          delay: 5m
+          value_type: UNSIGNED
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f85ec201
+              expression: last(/Template Homelab Linux Security/security.ssh.failures)>50
+              name: Falhas SSH > 50/hora
+              priority: AVERAGE
+        - uuid: 6f1f98636a0b4b2f9a6ad001f85ec102
+          name: Fail2ban banned IPs
+          type: ZABBIX_ACTIVE
+          key: security.fail2ban.banned
+          delay: 5m
+          value_type: UNSIGNED
+        - uuid: 6f1f98636a0b4b2f9a6ad001f85ec103
+          name: Users logged in
+          type: ZABBIX_ACTIVE
+          key: security.users.logged
+          delay: 10m
+          value_type: UNSIGNED
+        - uuid: 6f1f98636a0b4b2f9a6ad001f85ec104
+          name: passwd checksum
+          type: ZABBIX_ACTIVE
+          key: security.passwd.checksum
+          delay: 1m
+          value_type: TEXT
+          trends: '0'
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f85ec202
+              expression: change(/Template Homelab Linux Security/security.passwd.checksum)<>0
+              name: Arquivo /etc/passwd modificado
+              priority: DISASTER
+        - uuid: 6f1f98636a0b4b2f9a6ad001f85ec105
+          name: sudoers checksum
+          type: ZABBIX_ACTIVE
+          key: security.sudoers.checksum
+          delay: 1m
+          value_type: TEXT
+          trends: '0'
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f85ec203
+              expression: change(/Template Homelab Linux Security/security.sudoers.checksum)<>0
+              name: Arquivo /etc/sudoers modificado
+              priority: DISASTER
+        - uuid: 6f1f98636a0b4b2f9a6ad001f85ec106
+          name: Pending package updates
+          type: ZABBIX_ACTIVE
+          key: system.updates.pending
+          delay: 1d
+          value_type: UNSIGNED
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f85ec204
+              expression: last(/Template Homelab Linux Security/system.updates.pending)>0
+              name: Pacotes com atualizacao pendente
+              priority: AVERAGE
+        - uuid: 6f1f98636a0b4b2f9a6ad001f85ec107
+          name: fail2ban service state
+          type: ZABBIX
+          key: systemd.unit.info[fail2ban.service,ActiveState]
+          delay: 1m
+          value_type: TEXT
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f85ec205
+              expression: find(/Template Homelab Linux Security/systemd.unit.info[fail2ban.service,ActiveState],,"like","active")=0
+              name: Servico fail2ban parado
+              priority: HIGH
+

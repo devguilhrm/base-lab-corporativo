@@ -1,0 +1,11 @@
+$ cd infra
+$ cp .env.example .env
+$ docker compose up -d
+[+] Running 6/6
+ ✔ Network infra_monitoring_net      Created
+ ✔ Volume infra_pg_data              Created
+ ✔ Volume infra_grafana_data         Created
+ ✔ Container lab-postgres            Healthy
+ ✔ Container lab-zabbix-server       Started
+ ✔ Container lab-zabbix-web          Started
+ ✔ Container lab-grafana             Started

@@ -1,0 +1,32 @@
+$ ansible-galaxy collection install -r ansible/requirements.yml
+Starting galaxy collection install process
+community.general is already installed
+ansible.posix is already installed
+
+$ ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/linux-baseline.yml
+
+PLAY [Linux baseline for lab servers] ******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [vm-linux01]
+ok: [vm-linux02]
+ok: [vm-zabbix]
+
+TASK [Set timezone] ************************************************************
+ok: [vm-linux01]
+ok: [vm-linux02]
+ok: [vm-zabbix]
+
+TASK [Install common packages on Debian family] ********************************
+changed: [vm-linux01]
+changed: [vm-zabbix]
+
+TASK [Configure fail2ban service] **********************************************
+ok: [vm-linux01]
+ok: [vm-linux02]
+ok: [vm-zabbix]
+
+PLAY RECAP *********************************************************************
+vm-linux01 : ok=6 changed=1 unreachable=0 failed=0 skipped=1 rescued=0 ignored=0
+vm-linux02 : ok=5 changed=0 unreachable=0 failed=0 skipped=2 rescued=0 ignored=0
+vm-zabbix  : ok=6 changed=1 unreachable=0 failed=0 skipped=1 rescued=0 ignored=0

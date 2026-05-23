@@ -1,0 +1,84 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 6f1f98636a0b4b2f9a6ad001f8f00002
+      name: Templates/Homelab
+  templates:
+    - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5001
+      template: Template Homelab File Server
+      name: Template Homelab File Server
+      groups:
+        - name: Templates/Homelab
+      description: Custom Windows File Server monitoring for vm-fs01 using Zabbix Agent 2 and PowerShell UserParameters.
+      items:
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5101
+          name: C drive free percentage
+          type: ZABBIX
+          key: vfs.fs.size[C:,pfree]
+          delay: 5m
+          value_type: FLOAT
+          units: '%'
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5201
+              expression: last(/Template Homelab File Server/vfs.fs.size[C:,pfree])<10
+              name: Disco C: com menos de 10% livre
+              priority: HIGH
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5102
+          name: D drive free percentage
+          type: ZABBIX
+          key: vfs.fs.size[D:,pfree]
+          delay: 5m
+          value_type: FLOAT
+          units: '%'
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5202
+              expression: last(/Template Homelab File Server/vfs.fs.size[D:,pfree])<10
+              name: Disco D: com menos de 10% livre
+              priority: HIGH
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5103
+          name: SMB open sessions
+          type: ZABBIX_ACTIVE
+          key: fileserver.smb.sessions
+          delay: 2m
+          value_type: UNSIGNED
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5104
+          name: Open files total
+          type: ZABBIX_ACTIVE
+          key: fileserver.openfiles.total
+          delay: 2m
+          value_type: UNSIGNED
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5105
+          name: LanmanServer service state
+          type: ZABBIX
+          key: service.info[LanmanServer,state]
+          delay: 30s
+          value_type: UNSIGNED
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5203
+              expression: last(/Template Homelab File Server/service.info[LanmanServer,state])<>0
+              name: Servico LanmanServer parado
+              priority: DISASTER
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5106
+          name: DFS service state
+          type: ZABBIX
+          key: service.info[DFS,state]
+          delay: 30s
+          value_type: UNSIGNED
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5204
+              expression: last(/Template Homelab File Server/service.info[DFS,state])<>0
+              name: Servico DFS parado
+              priority: HIGH
+        - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5107
+          name: Share response time
+          type: ZABBIX_ACTIVE
+          key: fileserver.share.response
+          delay: 5m
+          value_type: FLOAT
+          units: ms
+          triggers:
+            - uuid: 6f1f98636a0b4b2f9a6ad001f8ff5205
+              expression: avg(/Template Homelab File Server/fileserver.share.response,5m)>2000
+              name: Tempo de resposta do share acima de 2s
+              priority: AVERAGE
+

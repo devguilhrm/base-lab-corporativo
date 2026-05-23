@@ -1,0 +1,36 @@
+web_scenarios:
+  - name: Zabbix Frontend
+    host: vm-zabbix
+    url: http://192.168.10.10/zabbix
+    expected_status: 200
+    expected_text: Zabbix
+    timeout: 10s
+  - name: Grafana Dashboard
+    host: vm-zabbix
+    url: http://192.168.10.10:3000
+    expected_status: 200
+    expected_text: Grafana
+    timeout: 10s
+  - name: Nginx vm-linux02
+    host: vm-linux02
+    url: http://192.168.10.31
+    expected_status: 200
+    max_response_time: 2s
+  - name: pfSense WebGUI
+    host: pfsense-gw
+    url: https://192.168.10.1
+    expected_status: 200
+    ssl_certificate_check: true
+  - name: Windows IIS optional
+    host: vm-dc01
+    url: http://192.168.10.20
+    expected_status: 200
+    enabled: false
+
+metrics:
+  - download_speed
+  - response_code
+  - response_time
+  - failed_step
+  - test_availability
+

@@ -1,0 +1,15 @@
+$ go run ./cmd/weekly-report
+Relatorio semanal Zabbix
+========================
+Periodo: ultimos 7 dias
+Hosts monitorados: 3
+Problemas abertos: 0
+Alertas criticos: 0
+Disponibilidade Zabbix Web: OK
+Disponibilidade Grafana: OK
+
+Resumo operacional:
+- Stack de monitoramento ativa.
+- Agentes Linux comunicando com o Zabbix Server.
+- Dashboards Grafana provisionados.
+- Nenhuma indisponibilidade critica no periodo.

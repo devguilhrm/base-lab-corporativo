@@ -1,0 +1,26 @@
+$ ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/zabbix-agent-linux.yml
+
+PLAY [Install and configure Zabbix Agent 2 on Linux hosts] *********************
+
+TASK [Download Zabbix release package for Ubuntu 22.04] ************************
+changed: [vm-linux01]
+changed: [vm-zabbix]
+
+TASK [Install Zabbix Agent 2 on Ubuntu] ****************************************
+changed: [vm-linux01]
+changed: [vm-zabbix]
+
+TASK [Configure Server for passive checks] *************************************
+changed: [vm-linux01]
+changed: [vm-linux02]
+changed: [vm-zabbix]
+
+TASK [Ensure zabbix agent service is enabled] **********************************
+ok: [vm-linux01]
+ok: [vm-linux02]
+ok: [vm-zabbix]
+
+PLAY RECAP *********************************************************************
+vm-linux01 : ok=8 changed=4 unreachable=0 failed=0 skipped=1 rescued=0 ignored=0
+vm-linux02 : ok=5 changed=2 unreachable=0 failed=0 skipped=4 rescued=0 ignored=0
+vm-zabbix  : ok=8 changed=4 unreachable=0 failed=0 skipped=1 rescued=0 ignored=0

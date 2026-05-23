@@ -1,0 +1,49 @@
+network_discovery:
+  name: Homelab Network Discovery
+  ip_range: 192.168.10.1-254
+  delay: 1h
+  checks:
+    - type: zabbix_agent
+      port: 10050
+    - type: icmp_ping
+    - type: snmpv2
+      port: 161
+      community: zabbix-lab
+  device_uniqueness: ip_address
+  host_name: dns_name
+  visible_name: dns_name
+  actions:
+    - add_host
+    - notify_admin
+
+autoregistration:
+  - name: Auto-registration Linux
+    condition: "Host metadata contains 'Linux'"
+    operations:
+      - add_host
+      - add_to_group: Linux Servers
+      - link_template: Linux by Zabbix agent 2
+      - link_template: Template Homelab Linux Security
+      - notify_admin
+  - name: Auto-registration Windows
+    condition: "Host metadata contains 'Windows'"
+    operations:
+      - add_host
+      - add_to_group: Windows Servers
+      - link_template: Windows by Zabbix agent
+      - notify_admin
+
+lld_rules:
+  - name: Filesystems
+    key: vfs.fs.discovery
+    hosts: Linux and Windows
+  - name: Network interfaces
+    key: net.if.discovery
+    hosts: Linux and Windows
+  - name: Windows services
+    key: service.discovery
+    hosts: vm-dc01, vm-fs01
+  - name: SNMP interfaces
+    key: IF-MIB::ifDescr
+    hosts: pfsense-gw, sw-core
+

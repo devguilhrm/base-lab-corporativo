@@ -1,0 +1,14 @@
+$ curl -I http://localhost:8080
+HTTP/1.1 200 OK
+Server: nginx
+Content-Type: text/html; charset=UTF-8
+
+$ curl -I http://localhost:3000/login
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+X-Frame-Options: deny
+
+Servicos publicados:
+- Zabbix Web: http://localhost:8080
+- Grafana: http://localhost:3000
+- Zabbix Server trapper: localhost:10051

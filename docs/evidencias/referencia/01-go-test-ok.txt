@@ -1,0 +1,5 @@
+$ go test ./...
+?   	labcontrolado/cmd/readiness-check	[no test files]
+?   	labcontrolado/cmd/weekly-report	[no test files]
+?   	labcontrolado/internal/zabbix	[no test files]
+ok  	labcontrolado	0.412s

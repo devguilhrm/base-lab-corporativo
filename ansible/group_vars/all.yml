@@ -1,0 +1,15 @@
+---
+timezone: America/Sao_Paulo
+ntp_servers:
+  - pool.ntp.org
+common_packages:
+  - curl
+  - wget
+  - vim
+  - htop
+  - net-tools
+  - unzip
+  - fail2ban
+zabbix_repo_deb: "https://repo.zabbix.com/zabbix/7.0/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu22.04_all.deb"
+zabbix_server_host: 10.10.10.10
+
