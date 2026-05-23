@@ -33,7 +33,7 @@ As decisões principais foram:
 - Manter scripts Bash e PowerShell para operações próximas do ambiente real.
 - Criar um modo mock para desenvolvimento em Windows, sem esconder que o runtime real depende de Docker, Ansible e Linux/WSL.
 
-## Pontos Fortes
+## Sobre o projeto
 
 | Área | Destaque |
 |---|---|
@@ -44,7 +44,6 @@ As decisões principais foram:
 | Redes | pfSense, VLANs, SNMP, discovery e monitoramento de interfaces |
 | Windows Server | Cobertura para AD, DNS, DHCP, File Server, DFS e serviços críticos |
 | Linux | Baseline, hardening SSH, fail2ban, agentes e métricas customizadas |
-| Portfólio | Documentação organizada, roadmap por fases e evidências técnicas versionáveis |
 | Qualidade | Testes automatizados em Go e readiness check com modo real e modo mock |
 
 ## Arquitetura Proposta
